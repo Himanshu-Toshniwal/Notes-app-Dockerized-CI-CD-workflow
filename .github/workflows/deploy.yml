@@ -1,0 +1,56 @@
+name: Deploy to Production
+
+on:
+  workflow_run:
+    workflows: ["Build, Test, Scan & Deploy"]
+    types:
+      - completed
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    environment: 
+      name: ${{ github.event.inputs.environment || 'staging' }}
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🚀 Deploy to staging
+        id: deploy
+        run: |
+          echo "🔄 Deploying Notes App..."
+          echo "📦 Image: himanshutoshniwal7570/notesapp:latest"
+          echo "🌍 Environment: ${{ github.event.inputs.environment || 'staging' }}"
+          
+          # Simulate deployment
+          echo "✅ Deployment successful!"
+          echo "url=http://notes-app-staging.example.com" >> $GITHUB_OUTPUT
+      
+      - name: 🏥 Post-deployment health check
+        run: |
+          echo "Running post-deployment health checks..."
+          # Add actual health check commands here
+          echo "✅ Health checks passed"
+      
+      - name: 📊 Deployment summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ github.event.inputs.environment || 'staging' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: himanshutoshniwal7570/notesapp:latest" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY

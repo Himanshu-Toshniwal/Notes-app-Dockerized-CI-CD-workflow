@@ -1,141 +1,49 @@
-# 📝 Notes App - CI/CD Edition
+# 📝 Notes App - Simplified DevOps Edition
 
-![Build Status](https://github.com/YOUR_USERNAME/Notes-App-CI-CD/workflows/Build,%20Test,%20Scan%20&%20Deploy/badge.svg)
-![Security Scan](https://github.com/YOUR_USERNAME/Notes-App-CI-CD/workflows/Security%20Scan%20&%20Cleanup/badge.svg)
-
-A fully-featured **Notes Application** with **Node.js**, **Express.js**, **MySQL**, **Docker**, and **GitHub Actions CI/CD Pipeline**.
+A clean **Notes Application** with **Node.js**, **Express.js**, **SQLite**, **Docker**, and **Kubernetes** deployment.
 
 ## ✨ Features
 
-- ✅ **Create, Read, Update, Delete** notes
-- ✅ **Real-time UI updates** (auto-refresh every 3 seconds)
-- ✅ **Persistent MySQL database** storage
-- ✅ **RESTful API** endpoints
-- ✅ **Beautiful responsive UI** with gradient design
-- ✅ **Docker multi-stage build** for optimization
-- ✅ **GitHub Actions CI/CD pipeline** with 4 stages
-- ✅ **Trivy security scanning** for vulnerabilities
-- ✅ **DockerHub auto-push** on main branch
-- ✅ **Scheduled security scans** and maintenance
-- ✅ **Health checks** and monitoring
-- ✅ **Non-root user** execution for security
+### Core Application
+- Create, Read, Update, Delete notes
+- Real-time UI updates with responsive design
+- SQLite database with UUID-based IDs
+- RESTful API endpoints with health checks
+- Modern UI with error handling
 
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────┐
-│          Frontend (HTML/CSS/JS)         │
-│    Beautiful Notes UI with Real-time    │
-└──────────────────┬──────────────────────┘
-                   │
-┌──────────────────▼──────────────────────┐
-│    Express.js Backend (Node.js)         │
-│    RESTful API for CRUD Operations      │
-└──────────────────┬──────────────────────┘
-                   │
-┌──────────────────▼──────────────────────┐
-│         MySQL Database                  │
-│    Persistent Data Storage              │
-└─────────────────────────────────────────┘
-
-CI/CD Pipeline:
-Build → Security Scan (Trivy) → Push to DockerHub → Deploy
-```
+### DevOps & Infrastructure
+- **Docker**: Containerization with multi-stage builds
+- **Kubernetes**: Basic K8s deployment manifests
+- **CI/CD**: GitHub Actions workflow for build and deploy
+- **SQLite**: Lightweight database for development
 
 ## 🚀 Quick Start
 
-### Local Development
-
-1. **Clone the repository**
+### SQLite Version (Recommended)
 ```bash
-git clone https://github.com/YOUR_USERNAME/Notes-App-CI-CD.git
-cd Notes-App-CI-CD
-```
-
-2. **Install dependencies**
-```bash
+# Install dependencies
 npm install
-```
 
-3. **Setup environment variables**
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=your_mysql_password
-DB_NAME=notesdb
-PORT=3000
-NODE_ENV=development
-```
-
-4. **Ensure MySQL is running**
-```bash
-# Make sure MySQL server is installed and running
-# Create database (optional, app will auto-create):
-mysql -u root -p
-> CREATE DATABASE notesdb;
-```
-
-5. **Start the application**
-```bash
-npm start
-# or for development with auto-reload
-npm run dev
-```
-
-6. **Access the app**
-```
-http://localhost:3000
-```
-
-### Using Docker Compose
-
-```bash
-# Build and start all services
-docker-compose up --build
-
-# Stop services
-docker-compose down
-
-# View logs
-docker-compose logs -f app
-```
-
-**URL**: `http://localhost:3000`
-
-### Using Docker CLI
-
-```bash
-# Build the image
-docker build -t notesapp:latest .
-
-# Run with MySQL
-docker run -d \
-  --name mysql-notesapp \
-  -e MYSQL_ROOT_PASSWORD=rootpass \
-  -e MYSQL_DATABASE=notesdb \
-  -p 3306:3306 \
-  mysql:8.0
-
-docker run -d \
-  --name notesapp \
-  -e DB_HOST=mysql-notesapp \
-  -e DB_USER=root \
-  -e DB_PASS=rootpass \
-  -p 3000:3000 \
-  --link mysql-notesapp \
-  notesapp:latest
-
+# Run application
+npm run start:sqlite
 # Access: http://localhost:3000
 ```
 
-## 📚 API Endpoints
+### Docker
+```bash
+# Run with Docker Compose
+docker-compose up --build
+# Access: http://localhost:3000
+```
 
-### Notes CRUD Operations
+### Kubernetes
+```bash
+# Deploy to K8s cluster
+cd k8s
+./deploy.sh
+```
+
+## 📚 API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -146,278 +54,366 @@ docker run -d \
 | DELETE | `/api/notes/:id` | Delete note |
 | GET | `/health` | Health check |
 
-### Example Requests
+## 🔧 Available Scripts
+
+- `npm run start:sqlite` - Start SQLite version
+- `npm run dev:sqlite` - Development mode with auto-reload
+- `npm test` - Test API endpoints
+
+## 📦 Project Structure
+
+```
+Notes-app-Dockerized-CI-CD-workflow/
+├── app-sqlite.js             # Main SQLite application
+├── package.json              # Dependencies and scripts
+├── docker-compose.yml        # Docker services
+├── Dockerfile               # Container build
+├── public/
+│   └── index.html           # Frontend UI
+├── .github/workflows/       # CI/CD pipeline
+│   └── ci-cd.yml           # Main workflow
+├── k8s/                     # Kubernetes manifests
+│   ├── namespace.yaml      # K8s namespace
+│   ├── deployment.yaml     # App deployment
+│   ├── service.yaml        # Service exposure
+│   └── deploy.sh          # Deployment script
+├── .env.sqlite             # Environment config
+├── run.sh                  # Quick start script
+├── test-api.sh             # API testing
+└── README.md               # Documentation
+```
+
+## 🔒 Environment Variables
+
+### SQLite Configuration (.env.sqlite)
+```env
+DB_PATH=./notesdb.sqlite
+PORT=3000
+NODE_ENV=development
+```
+
+### Docker Environment (.env.example)
+```env
+DB_PATH=/app/data/notesdb.sqlite
+PORT=3000
+NODE_ENV=production
+```
+
+## 🐳 Docker Usage
 
 ```bash
-# Get all notes
-curl http://localhost:3000/api/notes
+# Build and run
+docker-compose up --build
 
-# Create note
-curl -X POST http://localhost:3000/api/notes \
-  -H "Content-Type: application/json" \
-  -d '{"title": "My Note", "content": "Note content here"}'
+# Run in background
+docker-compose up -d
 
-# Update note
-curl -X PUT http://localhost:3000/api/notes/note-id \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Updated Title", "content": "Updated content"}'
+# Stop services
+docker-compose down
 
-# Delete note
-curl -X DELETE http://localhost:3000/api/notes/note-id
+# View logs
+docker-compose logs -f
+```
+
+## 💾 Database Backups
+
+### Automated SQLite Backup
+```bash
+npm run backup:sqlite
+# Creates: ./backups/notesdb_backup_YYYYMMDD_HHMMSS.sqlite.gz
+```
+
+### Backup Features
+- **Compression**: Gzip compression for space efficiency
+- **Timestamping**: Unique timestamps for each backup
+- **Automation**: GitHub Actions daily backups
+- **Retention**: Configurable backup retention policies
+- **Logging**: Detailed backup logs in `backups/backup.log`
+
+### Scheduled Backups
+```bash
+# Setup automated daily backups
+./setup-cron.sh    # Linux/Mac
+./setup-cron.bat   # Windows
+
+# Manual backup verification
+ls -la backups/
+```
+
+## 🔄 CI/CD Pipeline
+
+### GitHub Actions Workflows (6 Total)
+
+1. **Main CI/CD** (`ci-cd.yml`)
+   - Build Docker image with multi-stage optimization
+   - Security scanning with Trivy
+   - API testing with health checks
+   - Database backup testing
+   - Push to DockerHub on main branch
+
+2. **Kubernetes Deployment** (`k8s-deploy.yml`)
+   - Automated K8s deployment using Kind cluster
+   - Namespace isolation and resource management
+   - Health check validation and rollback support
+
+3. **Backup Automation** (`backup-automation.yml`)
+   - Daily automated backups at 2 AM UTC
+   - Backup verification and compression
+   - Retention policy enforcement
+
+4. **API Testing** (`api-testing.yml`)
+   - Comprehensive endpoint testing
+   - Performance and load testing
+   - Integration test validation
+
+5. **Security Scanning** (`security-scan.yml`)
+   - Daily vulnerability scans
+   - Dependency security checks
+   - SARIF report generation
+
+6. **Maintenance** (`maintenance.yml`)
+   - Cleanup old Docker images
+   - Log rotation and optimization
+   - Performance monitoring
+
+### Pipeline Features
+- **Multi-stage builds** for optimized images
+- **Security-first** approach with vulnerability scanning
+- **Automated testing** at every stage
+- **Zero-downtime deployments** with K8s rolling updates
+- **Comprehensive monitoring** and alerting
+
+## ☸️ Kubernetes Deployment
+
+### Production-Ready K8s Setup
+```bash
+# Deploy to Kubernetes
+cd k8s
+./deploy.sh
+
+# Check deployment status
+kubectl get all -n notes-app
+
+# Access application
+kubectl port-forward svc/notes-app-service 3000:3000 -n notes-app
+```
+
+### K8s Features
+- **Namespace Isolation**: Dedicated `notes-app` namespace
+- **High Availability**: 2 replica deployment with HPA
+- **Persistent Storage**: PVC for database persistence
+- **Resource Management**: CPU/Memory limits and requests
+- **Health Monitoring**: Liveness and readiness probes
+- **Auto-scaling**: Horizontal Pod Autoscaler (2-10 pods)
+- **Ingress Support**: Ready for external traffic routing
+
+### Monitoring & Scaling
+```bash
+# View pod status
+kubectl get pods -n notes-app
+
+# Check HPA status
+kubectl get hpa -n notes-app
+
+# View logs
+kubectl logs -f deployment/notes-app-deployment -n notes-app
+
+# Scale manually
+kubectl scale deployment notes-app-deployment --replicas=3 -n notes-app
+```
+
+## 🧪 Testing
+
+### Automated Testing
+```bash
+# Run comprehensive API tests
+npm test
+
+# Test specific endpoints
+./test-api.sh
 
 # Health check
 curl http://localhost:3000/health
 ```
 
-## 🐳 Docker Information
+### Manual API Testing
+```bash
+# Get all notes
+curl http://localhost:3000/api/notes
 
-### Dockerfile Stages
+# Create new note
+curl -X POST http://localhost:3000/api/notes \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Test Note","content":"This is a test note"}'
 
-1. **Builder Stage**: Installs production dependencies
-2. **Puller Stage**: Optimizes image size
-3. **Scanner Stage**: Prepares for security scanning
-4. **Final Stage**: Production-ready image with non-root user
+# Update note
+curl -X PUT http://localhost:3000/api/notes/[note-id] \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Updated","content":"Updated content"}'
 
-### Image Details
-
-- **Base Image**: `node:18-alpine` (lightweight)
-- **User**: `nodejs` (non-root for security)
-- **Exposed Port**: `3000`
-- **Health Check**: Built-in monitoring
-
-## 🔄 GitHub Actions Workflow
-
-### CI/CD Pipeline (`.github/workflows/ci-cd.yml`)
-
-**Triggered on**: `push` to main/develop, `pull_request` to main
-
-**Stages**:
-1. ✅ **Build** - Validates Docker build
-2. 🔒 **Security Scan** - Trivy vulnerability scanning
-3. 🚀 **Push** - Pushes to DockerHub on main branch
-4. 🧹 **Cleanup** - Cleanup and summary
-
-### Security Scan Workflow (`.github/workflows/security-scan.yml`)
-
-**Triggered**: Daily at 2 AM UTC + manual trigger
-
-**Features**:
-- Trivy vulnerability scanning
-- SARIF format upload to GitHub Security
-- Critical and High severity reporting
-
-### Maintenance Workflow (`.github/workflows/maintenance.yml`)
-
-**Triggered**: Weekly on Monday at 4 AM UTC
-
-**Tasks**:
-- Docker system cleanup
-- Image management
-- Disk space monitoring
-
-## 🔐 GitHub Secrets Setup
-
-You need to configure these secrets in your GitHub repository:
-
-### Required Secrets:
-```
-DOCKERHUB_USERNAME = himanshutoshniwal7570
-DOCKERHUB_TOKEN = <your_docker_token>
+# Delete note
+curl -X DELETE http://localhost:3000/api/notes/[note-id]
 ```
 
-### How to Set GitHub Secrets:
-
-1. Go to GitHub repository → **Settings** → **Secrets and variables** → **Actions**
-2. Click **New repository secret**
-3. Add:
-   - Name: `DOCKERHUB_USERNAME`
-   - Value: `himanshutoshniwal7570`
-4. Add:
-   - Name: `DOCKERHUB_TOKEN`
-   - Value: `<your_docker_personal_access_token>`
-
-### How to Generate Docker Token:
-
-1. Visit https://hub.docker.com/settings/security
-2. Click **New Access Token**
-3. Name it (e.g., "GitHub Actions")
-4. Copy the token and save it as `DOCKERHUB_TOKEN` in GitHub
-
-## 🔒 Security Features
-
-- ✅ **Trivy Scanning** - Detects vulnerabilities in container images
-- ✅ **Non-root User** - Application runs as unprivileged user
-- ✅ **Health Checks** - Monitors application health
-- ✅ **GitHub Security** - Uploads scan results to GitHub Security tab
-- ✅ **Input Validation** - Sanitizes user inputs
-- ✅ **Environment Secrets** - Secure credential management
-
-## 📦 Project Structure
-
-```
-Notes-App-CI-CD/
-├── app.js                          # Express.js main application
-├── package.json                    # Node.js dependencies
-├── Dockerfile                      # Multi-stage Docker build
-├── docker-compose.yml              # Docker Compose configuration
-├── .env.example                    # Environment variables template
-├── .gitignore                      # Git ignore rules
-├── public/
-│   └── index.html                  # Frontend UI
-├── .github/
-│   └── workflows/
-│       ├── ci-cd.yml              # Main CI/CD pipeline
-│       ├── security-scan.yml      # Security scanning
-│       └── maintenance.yml        # Maintenance tasks
-└── README.md                       # This file
+### Load Testing
+```bash
+# Test concurrent requests
+for i in {1..10}; do
+  curl -X POST http://localhost:3000/api/notes \
+    -H "Content-Type: application/json" \
+    -d "{\"title\":\"Load Test $i\",\"content\":\"Testing load\"}" &
+done
 ```
 
 ## 🚀 Deployment Options
 
-### Option 1: Docker Hub Registry
+### 1. Docker Hub (Production Ready)
 ```bash
+# Pull and run latest image
 docker pull himanshutoshniwal7570/notesapp:latest
-docker run -p 3000:3000 \
-  -e DB_HOST=your_mysql_host \
-  -e DB_USER=root \
-  -e DB_PASS=password \
-  himanshutoshniwal7570/notesapp:latest
+docker run -p 3000:3000 himanshutoshniwal7570/notesapp:latest
+
+# Run with persistent storage
+docker run -p 3000:3000 -v $(pwd)/data:/app/data himanshutoshniwal7570/notesapp:latest
 ```
 
-### Option 2: Kubernetes
+### 2. Local Development
 ```bash
-kubectl apply -f k8s-deployment.yaml
+# Clone repository
+git clone <repository-url>
+cd Notes-app-Dockerized-CI-CD-workflow
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev:sqlite
 ```
 
-### Option 3: Docker Swarm
+### 3. Production Kubernetes
 ```bash
-docker stack deploy -c docker-compose.yml notesapp
+# Deploy to production K8s cluster
+kubectl apply -f k8s/
+
+# Verify deployment
+kubectl get all -n notes-app
+
+# Access via LoadBalancer or Ingress
+kubectl get ingress -n notes-app
 ```
 
-## 📊 Monitoring & Logs
+### 4. GitHub Actions Auto-Deploy
+- Push to `main` branch triggers automatic deployment
+- Includes security scanning, testing, and K8s deployment
+- Zero-downtime rolling updates with health checks
 
+## 🔐 Security Features
+
+### Built-in Security
+- **Vulnerability Scanning**: Daily Trivy scans for container security
+- **Dependency Checks**: Automated security updates via GitHub Actions
+- **Resource Limits**: K8s resource constraints prevent resource exhaustion
+- **Health Monitoring**: Liveness/readiness probes for reliability
+- **Input Validation**: Sanitized API inputs and error handling
+
+### Security Best Practices
+- Non-root container execution
+- Multi-stage Docker builds for minimal attack surface
+- Secrets management via K8s secrets and GitHub secrets
+- Network policies for pod-to-pod communication
+- Regular security updates via automated workflows
+
+## 📊 Monitoring & Observability
+
+### Application Monitoring
 ```bash
-# View container logs
-docker logs -f notesapp
-
-# Using Docker Compose
-docker-compose logs -f app
-
-# Check health status
+# Health check endpoint
 curl http://localhost:3000/health
 
-# View all notes from CLI
-curl http://localhost:3000/api/notes | jq '.'
+# Application metrics
+kubectl top pods -n notes-app
+
+# View application logs
+kubectl logs -f deployment/notes-app-deployment -n notes-app
 ```
 
-## 🧪 Testing
+### Performance Metrics
+- **Response Time**: API endpoint performance tracking
+- **Resource Usage**: CPU/Memory monitoring via K8s metrics
+- **Auto-scaling**: HPA based on CPU utilization (70% threshold)
+- **Backup Status**: Automated backup success/failure tracking
 
-```bash
-# Test API endpoints
-bash test-api.sh
+## 🛠️ Development Workflow
 
-# Or manually test
-curl -X GET http://localhost:3000/api/notes
-curl -X POST http://localhost:3000/api/notes \
-  -H "Content-Type: application/json" \
-  -d '{"title":"Test","content":"Testing"}'
+### Local Development
+1. **Setup**: `npm install` and `npm run dev:sqlite`
+2. **Testing**: `npm test` for API validation
+3. **Backup**: `npm run backup:sqlite` for data safety
+4. **Docker**: `docker-compose up` for containerized testing
+
+### CI/CD Workflow
+1. **Push**: Code changes trigger GitHub Actions
+2. **Build**: Multi-stage Docker image creation
+3. **Test**: Comprehensive API and integration testing
+4. **Security**: Trivy vulnerability scanning
+5. **Deploy**: Automated K8s deployment on main branch
+6. **Monitor**: Health checks and performance monitoring
+
+### Production Deployment
+1. **K8s Cluster**: Deploy using `k8s/deploy.sh`
+2. **Scaling**: HPA automatically scales 2-10 pods
+3. **Storage**: PVC ensures data persistence
+4. **Monitoring**: Built-in health checks and metrics
+5. **Backups**: Automated daily backups with retention
+
+## 🔧 Configuration
+
+### GitHub Secrets Required
+```
+DOCKERHUB_USERNAME=your_dockerhub_username
+DOCKERHUB_TOKEN=your_dockerhub_token
 ```
 
-## 🔧 Environment Variables
+### Environment Configuration
+- **Development**: Uses `.env.sqlite` with local SQLite
+- **Docker**: Uses environment variables for container config
+- **Kubernetes**: Uses ConfigMaps and Secrets for secure config management
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DB_HOST` | localhost | MySQL host |
-| `DB_USER` | root | MySQL username |
-| `DB_PASS` | (empty) | MySQL password |
-| `DB_NAME` | notesdb | Database name |
-| `PORT` | 3000 | Application port |
-| `NODE_ENV` | development | Environment mode |
+## 📚 Documentation
 
-## 🐛 Troubleshooting
+- **[GitHub Actions Guide](GITHUB_ACTIONS_GUIDE.md)**: Complete CI/CD setup
+- **[Security Guide](SECURITY_GUIDE.md)**: Security best practices
+- **[Secrets Config](.github/SECRETS_CONFIG.md)**: GitHub secrets setup
 
-### MySQL Connection Error
-```bash
-# Check if MySQL is running
-mysql -u root -p
+## 🎯 Production Features
 
-# Verify connection in app
-curl http://localhost:3000/api/notes
-```
+### Scalability
+- **Horizontal Pod Autoscaler**: 2-10 pods based on CPU usage
+- **Resource Optimization**: Efficient memory and CPU limits
+- **Load Balancing**: K8s service with multiple pod endpoints
 
-### Docker Build Issues
-```bash
-# Clean build
-docker build --no-cache -t notesapp:latest .
+### Reliability
+- **Health Checks**: Liveness and readiness probes
+- **Rolling Updates**: Zero-downtime deployments
+- **Persistent Storage**: Data survives pod restarts
+- **Backup Strategy**: Automated daily backups with compression
 
-# Check build logs
-docker build -t notesapp:latest . 2>&1 | tail -50
-```
-
-### Port Already in Use
-```bash
-# Change port in .env
-PORT=3001
-
-# Or kill existing process
-lsof -i :3000
-kill -9 <PID>
-```
-
-## 📈 Performance Tips
-
-- Use Docker volume for MySQL data persistence
-- Enable Redis caching for frequently accessed notes
-- Implement pagination for large datasets
-- Use connection pooling (already implemented)
-- Regular database cleanup of old notes
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+### Security
+- **Container Security**: Non-root execution, minimal base image
+- **Network Security**: K8s network policies and service isolation
+- **Vulnerability Management**: Daily security scans and updates
+- **Secrets Management**: Secure handling of sensitive configuration
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see LICENSE file for details.
+MIT License - see LICENSE file for details
 
 ## 👤 Author
 
-**Himanshu Tosh Niwal**
+**Himanshu Toshniwal**
 - GitHub: [@himanshutoshniwal7570](https://github.com/himanshutoshniwal7570)
 - Docker Hub: [@himanshutoshniwal7570](https://hub.docker.com/u/himanshutoshniwal7570)
 
-## 📞 Support
-
-For issues, questions, or suggestions:
-- Open an issue on GitHub
-- Check existing documentation
-- Review Docker logs for errors
-
-## 🎯 Roadmap
-
-- [ ] Add user authentication
-- [ ] Implement search functionality
-- [ ] Add tags/categories for notes
-- [ ] Real-time collaboration (WebSocket)
-- [ ] Mobile app (React Native)
-- [ ] Cloud deployment (AWS, GCP)
-- [ ] Database backup automation
-- [ ] Advanced analytics dashboard
-
-## 📚 References
-
-- [Express.js Documentation](https://expressjs.com/)
-- [MySQL Node.js](https://github.com/mysqljs/mysql2)
-- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Trivy Security Scanner](https://github.com/aquasecurity/trivy)
-
 ---
 
-**Made with ❤️ by Himanshu Tosh Niwal** | **Powered by CI/CD Pipeline**
-
-⭐ If you found this helpful, please star the repository!
+**Ready for Production** ✅ | **DevOps Complete** ✅ | **Security Hardened** ✅ | **Auto-Scaling** ✅
