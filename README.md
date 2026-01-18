@@ -411,8 +411,6 @@ MIT License - see LICENSE file for details
 ## 👤 Author
 
 **Himanshu Toshniwal**
-- GitHub: [@himanshutoshniwal7570](https://github.com/himanshutoshniwal7570)
-- Docker Hub: [@himanshutoshniwal7570](https://hub.docker.com/u/himanshutoshniwal7570)
 
 ---
 

@@ -1,21 +1,19 @@
 {
   "name": "notes-app-cicd",
   "version": "1.0.0",
-  "description": "Notes App with MySQL and CI/CD Pipeline",
-  "main": "app.js",
+  "description": "Notes App with SQLite and CI/CD Pipeline",
+  "main": "app-sqlite.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node app-sqlite.js",
     "start:sqlite": "node app-sqlite.js",
-    "dev": "nodemon app.js",
+    "dev": "nodemon app-sqlite.js",
     "dev:sqlite": "nodemon app-sqlite.js",
-    "backup:mysql": "bash backup-mysql.sh",
-    "backup:sqlite": "bash backup-sqlite.sh",
     "test": "bash test-api.sh"
   },
   "keywords": [
     "notes",
     "app",
-    "mysql",
+    "sqlite",
     "docker",
     "cicd"
   ],

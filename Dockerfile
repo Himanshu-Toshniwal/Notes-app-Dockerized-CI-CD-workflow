@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 
 # Copy application code
-COPY app.js .
+COPY app-sqlite.js .
 COPY public/ ./public/
 
 # Stage 3: Security Scan Stage (Trivy will scan in CI/CD)
@@ -38,7 +38,7 @@ RUN adduser -S nodejs -u 1001
 
 # Copy from puller stage
 COPY --from=puller --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=puller --chown=nodejs:nodejs /app/app.js .
+COPY --from=puller --chown=nodejs:nodejs /app/app-sqlite.js .
 COPY --from=puller --chown=nodejs:nodejs /app/public ./public
 
 # Switch to non-root user
@@ -52,4 +52,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
 
 # Start application
-CMD ["node", "app.js"]
+CMD ["node", "app-sqlite.js"]
